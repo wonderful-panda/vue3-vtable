@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "rootDir": "..",
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "paths": {
+      "vue3-vtable": ["../src"],
+      "vue3-vtable/*": ["../src/*"]
+    }
+  },
+  "include": ["../example/**/*.ts", "../example/**/*.tsx", "../src/jsx.d.ts"],
+  "exclude": ["node_modules"]
+}
