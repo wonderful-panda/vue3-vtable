@@ -1,4 +1,4 @@
 import { createApp } from "vue";
-import VtreeTableExample from "./VtreeTableExample";
+import App from "./App";
 
-createApp(VtreeTableExample).mount("#app");
+createApp(App).mount("#app");

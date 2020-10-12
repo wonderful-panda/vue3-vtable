@@ -12,8 +12,16 @@ import { css } from "emotion";
 type Cols = "index" | "name" | "value" | "description";
 const VtreeTable = vtreeTableOf<string, Cols>();
 
+const wrapperClass = css`
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+`;
+
 const className = css`
   border: 1px solid #bbb;
+  flex: 1;
   .vtable-header {
     border-bottom: 1px solid #bbb;
   }
@@ -38,7 +46,7 @@ const className = css`
 const columns: VtableColumn<Cols>[] = [
   {
     id: "index",
-    title: "*",
+    title: "#",
     minWidth: 20,
     defaultWidth: 60,
   },
@@ -106,7 +114,7 @@ export default defineComponent({
     };
 
     return () => (
-      <>
+      <div class={wrapperClass}>
         <div style={{ margin: "2px" }}>
           <button style={{ margin: "2px" }} onClick={expandAll}>
             Expand all
@@ -115,31 +123,28 @@ export default defineComponent({
             Collapse all
           </button>
         </div>
-        <div id="vtreetable">
-          <VtreeTable
-            ref={vtreeRef}
-            class={className}
-            style={{ height: "80vh", width: "100%" }}
-            headerHeight={24}
-            columns={columns}
-            getItemKey={(s) => s}
-            rootNodes={roots}
-            rowHeight={24}
-            renderCell={cell}
-            state={state.value}
-            hoveredSplitterClass="vtable-splitter-active"
-            draggingSplitterClass="vtable-splitter-active"
-            on={{
-              rowclick: (params) => {
-                alert("rowclick " + params.index);
-              },
-              "update:state": (value) => {
-                state.value = value;
-              },
-            }}
-          />
-        </div>
-      </>
+        <VtreeTable
+          ref={vtreeRef}
+          class={className}
+          headerHeight={24}
+          columns={columns}
+          getItemKey={(s) => s}
+          rootNodes={roots}
+          rowHeight={24}
+          renderCell={cell}
+          state={state.value}
+          hoveredSplitterClass="vtable-splitter-active"
+          draggingSplitterClass="vtable-splitter-active"
+          on={{
+            rowclick: (params) => {
+              alert("rowclick " + params.index);
+            },
+            "update:state": (value) => {
+              state.value = value;
+            },
+          }}
+        />
+      </div>
     );
   },
 });
