@@ -211,7 +211,12 @@ function factory<T, Cols extends string>() {
         <Vlist
           ref={vlistVm}
           style={{ flex: "1 1 auto" }}
-          {...props}
+          getItemKey={props.getItemKey}
+          itemCount={props.itemCount}
+          sliceItems={props.sliceItems}
+          rowHeight={props.rowHeight}
+          overscan={props.overscan}
+          rowStyleCycle={props.rowStyleCycle}
           contentWidth={px(contentWidth.value)}
           renderHeader={header}
           renderRow={row}
