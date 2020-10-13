@@ -1,17 +1,10 @@
 import { defineComponent, ref } from "vue";
-import {
-  VtableColumn,
-  RenderCell,
-  TreeNode,
-  TreeNodeWithState,
-  vtreeTableOf,
-  ExpandableCell,
-} from "vue3-vtable";
+import { VtableColumn, RenderCell, vtableOf } from "vue3-vtable";
 import { css } from "emotion";
 
 type Item = { id: string; value: string };
 type Cols = "name" | "value" | "description";
-const VtreeTable = vtreeTableOf<Item, Cols>();
+const Vtable = vtableOf<Item, Cols>();
 
 const wrapperClass = css`
   flex: 1;
@@ -66,35 +59,21 @@ const columns: VtableColumn<Cols>[] = [
   },
 ];
 
-/* Create root nodes */
-const ABCDE = [..."ABCDE"];
-const createNode = (id: string, level: number): TreeNode<Item> => {
-  if (level < 5) {
-    return {
-      data: { id, value: `value: ${id}` },
-      children: ABCDE.map((i) => createNode(`${id}${i}`, level + 1)),
-    };
-  } else {
-    return { data: { id, value: `value: ${id}` } };
-  }
-};
-
-const roots = ABCDE.map((c) => createNode(c, 0));
+/* Create items */
+const items = [] as Item[];
+for (let i = 1; i < 10001; ++i) {
+  items.push({ id: i.toString(), value: `value: ${i}` });
+}
 
 export default defineComponent({
   name: "App",
   setup() {
     const state = ref({ widths: {} as Record<Cols, number> });
-    const vm = ref<null | InstanceType<typeof VtreeTable>>(null);
-    const cell: RenderCell<TreeNodeWithState<Item>, Cols> = (p) => {
-      const { id, value } = p.item.data;
+    const cell: RenderCell<Item, Cols> = (p) => {
+      const { id, value } = p.item;
       switch (p.columnId) {
         case "name":
-          return (
-            <ExpandableCell nodeState={p.item} class="cell-name">
-              {id}
-            </ExpandableCell>
-          );
+          return id;
         case "value":
           return value;
         case "description":
@@ -106,20 +85,11 @@ export default defineComponent({
 
     return () => (
       <div class={wrapperClass}>
-        <div style={{ margin: "2px" }}>
-          <button style={{ margin: "2px" }} onClick={() => vm.value?.expandAll()}>
-            Expand all
-          </button>
-          <button style={{ margin: "2px" }} onClick={() => vm.value?.collapseAll()}>
-            Collapse all
-          </button>
-        </div>
-        <VtreeTable
-          ref={vm}
+        <Vtable
           class={className}
           columns={columns}
           getItemKey={(s) => s.id}
-          rootNodes={roots}
+          items={items}
           rowHeight={24}
           renderCell={cell}
           state={state.value}

@@ -15,8 +15,7 @@
     "baseUrl": ".",
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
     "paths": {
-      "vue3-vtable": ["../src"],
-      "vue3-vtable/*": ["../src/*"]
+      "vue3-vtable": [".."]
     }
   },
   "include": ["../example/**/*.ts", "../example/**/*.tsx", "../src/jsx.d.ts"],

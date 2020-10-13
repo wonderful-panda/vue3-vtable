@@ -1,3 +1,3 @@
-declare module "*?source" {
+declare module "!!raw-loader!*" {
   export default string;
 }

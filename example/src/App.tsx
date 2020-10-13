@@ -1,22 +1,37 @@
-import { computed, defineComponent, ref } from "vue";
+import CodeMirror, { Editor } from "codemirror";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/neat.css";
+import "codemirror/mode/javascript/javascript.js";
+import { defineAsyncComponent, defineComponent, onMounted, ref, watch } from "vue";
 import { css } from "emotion";
-import VtreeTableExample from "./VtreeTableExample";
-import VtreeTableExampleSrc from "./VtreeTableExample?source";
 
 const containerStyle = css`
   display: flex;
-  padding: 2px;
-  border: 1px solid black;
+  padding: 10px;
   width: 90vw;
-  height: 80vh;
+  height: 90vh;
   overflow: hidden;
 `;
 
-const innerStyle = css`
-  flex-basis: 0%;
+const sourceStyle = css`
+  flex-basis: 45%;
   flex-shrink: 0;
   flex-grow: 1;
-  padding: 2px;
+  padding-right: 10px;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid gray;
+  .CodeMirror {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const componentStyle = css`
+  flex-basis: 45%;
+  flex-shrink: 0;
+  flex-grow: 1;
+  padding-left: 10px;
   display: flex;
   overflow: hidden;
 `;
@@ -24,20 +39,46 @@ const innerStyle = css`
 const samples = [
   {
     text: "Vtable example",
-    source: "NOT READY",
-    component: VtreeTableExample,
+    source: import("!!raw-loader!./VtableExample"),
+    component: defineAsyncComponent(() => import("./VtableExample")),
   },
   {
     text: "VtreeTable example",
-    source: VtreeTableExampleSrc,
-    component: VtreeTableExample,
+    source: import("!!raw-loader!./VtreeTableExample"),
+    component: defineAsyncComponent(() => import("./VtreeTableExample")),
   },
 ];
 
 export default defineComponent({
   setup() {
     const selected = ref(0);
-    const src = computed(() => samples[selected.value].source);
+    let editor: Editor | null = null;
+    const src = ref("");
+
+    const updateSource = async () => {
+      src.value = (await samples[selected.value].source).default;
+      if (editor) {
+        editor.setValue(src.value);
+      }
+    };
+
+    watch(selected, updateSource);
+    // const src = computed(() => samples[selected.value].source);
+    const textarea = ref<null | HTMLTextAreaElement>(null);
+
+    onMounted(() => {
+      const el = textarea.value;
+      if (!el) {
+        return;
+      }
+      editor = CodeMirror.fromTextArea(el, {
+        readOnly: true,
+        lineNumbers: true,
+        theme: "neat",
+        mode: "javascript",
+      });
+      updateSource();
+    });
 
     return () => {
       const Component = samples[selected.value].component;
@@ -51,8 +92,10 @@ export default defineComponent({
             ))}
           </select>
           <div class={containerStyle}>
-            <textarea class={innerStyle}>{src.value}</textarea>
-            <div class={innerStyle}>
+            <div class={sourceStyle}>
+              <textarea ref={textarea} />
+            </div>
+            <div class={componentStyle}>
               <Component />
             </div>
           </div>
