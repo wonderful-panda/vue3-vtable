@@ -96,7 +96,7 @@ function factory<T, Cols extends string>() {
     },
     emits: {
       "update:state": (value: { readonly widths: Record<Cols, number> }) => true,
-      ...emits,
+      ...({} as typeof emits),
     },
     setup(props, { emit }) {
       const indentWidth = computed(() => props.indentWidth);
@@ -170,6 +170,7 @@ function factory<T, Cols extends string>() {
         "update:state": (value: typeof props["state"]) => {
           emit("update:state", value);
         },
+        rowclick: () => console.log("rowclick"),
       };
 
       const render_ = () => {
