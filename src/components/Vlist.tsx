@@ -133,10 +133,9 @@ function factory<T>() {
         if (!sc) {
           return;
         }
-        const bound = sc.getBoundingClientRect();
         const bodyWidth = sc.clientWidth;
         const bodyHeight = sc.clientHeight;
-        const vScrollBarWidth = Math.floor(bound.width - bodyWidth);
+        const vScrollBarWidth = sc.offsetWidth - sc.clientWidth - sc.clientLeft;
         if (
           data.bodyWidth !== bodyWidth ||
           data.bodyHeight !== bodyHeight ||
