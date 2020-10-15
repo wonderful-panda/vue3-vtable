@@ -1,3 +1,7 @@
+/**
+ * This implementation is based on ResizeSensor of
+ *   https://github.com/marcj/css-element-queries (MIT license. Copyright Marc J. Schmidt.)
+ */
 import { defineComponent, CSSProperties, ref, computed, onMounted, onActivated } from "vue";
 import { withDefault, required } from "./prop";
 import throttle from "lodash.throttle";
